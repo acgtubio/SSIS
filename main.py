@@ -16,6 +16,9 @@ class MainWindow(QMainWindow):
         self.b1 = QtWidgets.QPushButton(self)
         self.b1.setText("wot")
 
+        self.b2 = QtWidgets.QPushButton(self)
+        self.b2.setText("wot")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
