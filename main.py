@@ -3,6 +3,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QStyle
 import sys
 
 
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -15,12 +17,10 @@ class MainWindow(QMainWindow):
         self.b1.setText("wot")
 
 
-def main():
+if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     w = MainWindow()
     w.show()
 
     sys.exit(app.exec_())
-
-main()
