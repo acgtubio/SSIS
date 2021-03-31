@@ -1,39 +1,39 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from csvHandling import getData
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(898, 515)
+        MainWindow.resize(740, 515)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
         #Table
         self.studentList = QtWidgets.QTableWidget(self.centralwidget)
-        self.studentList.setGeometry(QtCore.QRect(20, 20, 711, 461))
+        self.studentList.setGeometry(QtCore.QRect(20, 20, 550, 461))
         self.studentList.setColumnCount(5)
         self.studentList.setObjectName("studentList")
-        self.studentList.setRowCount(0)
-        self.studentList.setHorizontalHeaderLabels(["ID","Name","Course","Year","Gender"])
+        self.studentList.setHorizontalHeaderLabels(["ID","Name","Year","Course","Gender"])
 
         #Buttons
         self.editInfo = QtWidgets.QPushButton(self.centralwidget)
-        self.editInfo.setGeometry(QtCore.QRect(760, 370, 111, 41))
+        self.editInfo.setGeometry(QtCore.QRect(600, 370, 111, 41))
         self.editInfo.setObjectName("editInfo")
         self.editInfo.clicked.connect(self.editInfoClicked)
 
         self.delStudent = QtWidgets.QPushButton(self.centralwidget)
-        self.delStudent.setGeometry(QtCore.QRect(760, 420, 111, 41))
+        self.delStudent.setGeometry(QtCore.QRect(600, 420, 111, 41))
         self.delStudent.setObjectName("delStudent")
         self.delStudent.clicked.connect(self.delStudentClicked)
 
         self.addStudent = QtWidgets.QPushButton(self.centralwidget)
-        self.addStudent.setGeometry(QtCore.QRect(760, 320, 111, 41))
+        self.addStudent.setGeometry(QtCore.QRect(600, 320, 111, 41))
         self.addStudent.setObjectName("addStudent")
         self.addStudent.clicked.connect(self.addStudentClicked)
 
         self.showList = QtWidgets.QPushButton(self.centralwidget)
-        self.showList.setGeometry(QtCore.QRect(760, 20, 111, 41))
+        self.showList.setGeometry(QtCore.QRect(600, 20, 111, 41))
         self.showList.setObjectName("showList")
         self.showList.clicked.connect(self.showListClicked)
 
@@ -55,7 +55,16 @@ class Ui_MainWindow(object):
         pass
 
     def showListClicked(self):
-        pass
+        students = getData()                                                #from csvHandling file.
+        self.studentList.setRowCount(len(students) -1)
+        for student in students:
+            row = 0
+            self.studentList.setItem(row, 0, QtWidgets.QTableWidgetItem(str(student[0])))
+            self.studentList.setItem(row, 1, QtWidgets.QTableWidgetItem(f"{str(student[1])}, {str(student[2])} {str(student[3])}"))
+            self.studentList.setItem(row, 2, QtWidgets.QTableWidgetItem(str(student[4])))
+            self.studentList.setItem(row, 3, QtWidgets.QTableWidgetItem(str(student[5])))
+            self.studentList.setItem(row, 4, QtWidgets.QTableWidgetItem(str(student[6])))
+            row+=1
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
