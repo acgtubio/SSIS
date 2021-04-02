@@ -112,10 +112,19 @@ class Ui_delStud(object):
         self.delButton = QtWidgets.QPushButton(self.centralwidget)
         self.delButton.setGeometry(QtCore.QRect(290, 360, 101, 31))
         self.delButton.setObjectName("delButton")
+
+        self.diffID = QtWidgets.QPushButton(self.centralwidget)
+        self.diffID.setGeometry(QtCore.QRect(170, 360, 101, 31))
+        self.diffID.setObjectName("delButton")
+        self.diffID.clicked.connect(self.notThisID)
+        self.diffID.hide()
+
         if self.src == 'd':  
             self.delButton.clicked.connect(self.delStudConfirm)
         elif self.src == 'e':
             self.delButton.clicked.connect(self.editConfirm)
+            self.diffID.show()
+            self.diffID.setEnabled(False)
         else:
             self.delButton.hide()
         self.delButton.setEnabled(False)
@@ -151,14 +160,22 @@ class Ui_delStud(object):
                     if self.src == 'e':
                         self.enableFields(True)
                         self.idCheck.setEnabled(False)
-                        
+                        self.diffID.setEnabled(True)   
 
             if(not found):
                 self.cAlert.setText("ID not found.")
+                self.resetUI()
                 a = self.cAlert.exec_()
         else:
             self.cAlert.setText("Enter ID #")
             a = self.cAlert.exec_()
+            self.resetUI()
+
+    def notThisID(self):
+        self.diffID.setEnabled(False)
+        self.resetUI()
+        self.idCheck.setEnabled(True)
+        self.enableFields(False)
 
     def editConfirm(self):
         self.delStudConfirm()                               #Deletes existing record, then appends an updated information.
@@ -176,7 +193,7 @@ class Ui_delStud(object):
     
     def delStudConfirm(self):
         mode = 'w'
-        for student in self.studList:                             #Basically rewrites the entire csv file.
+        for student in self.studList:         #Basically rewrites the entire csv file.
             if student[0] != self.delID:
                 pushData(student, mode)
                 mode = 'a'
@@ -186,7 +203,7 @@ class Ui_delStud(object):
             a = self.cAlert.exec_()
             self.resetUI()
 
-    def resetUI(self):
+    def resetUI(self):                      #Empties the contents of input fields.
         self.delButton.setEnabled(False)
         self.idCheck.setText("")
         self.lnameRE.setText("")
@@ -197,7 +214,7 @@ class Ui_delStud(object):
         self.genderRE.setText("")
         self.studList = None
 
-    def enableFields(self,b):
+    def enableFields(self,b):               # Input Fields can now be edited.
         self.fnameRE.setEnabled(b)
         self.lnameRE.setEnabled(b)
         self.mnameRE.setEnabled(b)
@@ -229,7 +246,7 @@ class Ui_delStud(object):
         self.label_4.adjustSize()
         self.label_5.setText(_translate("delStud", "Gender:"))
         self.delButton.setText(_translate("delStud", "Confirm"))
-
+        self.diffID.setText(_translate("delStud", "Not this ID"))
 
 if __name__ == "__main__":
     import sys
