@@ -53,13 +53,13 @@ class Ui_addStudentWindow(object):
         self.gender.setObjectName("gender")
 
         #Inputs
-        self.lnameIn = QtWidgets.QLineEdit(self.frame)
-        self.lnameIn.setGeometry(QtCore.QRect(130, 70, 321, 20))
-        self.lnameIn.setObjectName("lnameIn")
-
         self.idIn = QtWidgets.QLineEdit(self.frame)
         self.idIn.setGeometry(QtCore.QRect(130, 20, 321, 20))
         self.idIn.setObjectName("idIn")
+
+        self.lnameIn = QtWidgets.QLineEdit(self.frame)
+        self.lnameIn.setGeometry(QtCore.QRect(130, 70, 321, 20))
+        self.lnameIn.setObjectName("lnameIn")
 
         self.fnameIn = QtWidgets.QLineEdit(self.frame)
         self.fnameIn.setGeometry(QtCore.QRect(130, 100, 321, 20))
@@ -69,13 +69,13 @@ class Ui_addStudentWindow(object):
         self.mnameIn.setGeometry(QtCore.QRect(130, 130, 321, 20))
         self.mnameIn.setObjectName("mnameIn")
 
-        self.courseIn = QtWidgets.QLineEdit(self.frame)
-        self.courseIn.setGeometry(QtCore.QRect(130, 210, 321, 20))
-        self.courseIn.setObjectName("courseIn")
-
         self.yearIn = QtWidgets.QLineEdit(self.frame)
         self.yearIn.setGeometry(QtCore.QRect(130, 180, 321, 20))
         self.yearIn.setObjectName("yearIn")
+
+        self.courseIn = QtWidgets.QLineEdit(self.frame)
+        self.courseIn.setGeometry(QtCore.QRect(130, 210, 321, 20))
+        self.courseIn.setObjectName("courseIn") 
 
         #Radio Buttons
         self.radioButton = QtWidgets.QRadioButton(self.frame)
