@@ -1,9 +1,17 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from csvHandling import pushData, getData
-import re
+from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5.QtWidgets import QApplication, QMainWindow
+import sys
 
-class Ui_addStudentWindow(object):
-    def setupUi(self, addStudentWindow):
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setGeometry(300,300, 500, 500)
+        self.setWindowTitle("Simple Student Information System")
+        self.initUI()
+    
+    def initUI(self):
+        addStudentWindow = QMainWindow()
         addStudentWindow.setObjectName("addStudentWindow")
         addStudentWindow.resize(496, 444)
         self.centralwidget = QtWidgets.QWidget(addStudentWindow)
@@ -81,77 +89,29 @@ class Ui_addStudentWindow(object):
         self.radioButton = QtWidgets.QRadioButton(self.frame)
         self.radioButton.setGeometry(QtCore.QRect(130, 260, 82, 17))
         self.radioButton.setObjectName("radioButton")
-        self.radioButton.toggled.connect(self.selectedGender)
+        #self.radioButton.toggled.connect(self.selectedGender)
         self.radioButton_2 = QtWidgets.QRadioButton(self.frame)
         self.radioButton_2.setGeometry(QtCore.QRect(190, 260, 82, 17))
         self.radioButton_2.setObjectName("radioButton_2")
-        self.radioButton_2.toggled.connect(self.selectedGender)
+        #self.radioButton_2.toggled.connect(self.selectedGender)
         self.radioButton_3 = QtWidgets.QRadioButton(self.frame)
         self.radioButton_3.setGeometry(QtCore.QRect(270, 260, 82, 17))
         self.radioButton_3.setObjectName("radioButton_3")
-        self.radioButton_3.toggled.connect(self.selectedGender)
+        #self.radioButton_3.toggled.connect(self.selectedGender)
 
         #Submit
         self.addStudentButton = QtWidgets.QPushButton(self.centralwidget)
         self.addStudentButton.setGeometry(QtCore.QRect(360, 390, 101, 31))
         self.addStudentButton.setObjectName("addStudentButton")
-        self.addStudentButton.clicked.connect(self.submitButton)
+        #self.addStudentButton.clicked.connect(self.submitButton)
 
         addStudentWindow.setCentralWidget(self.centralwidget)
         self.retranslateUi(addStudentWindow)
         QtCore.QMetaObject.connectSlotsByName(addStudentWindow)
 
-    def submitButton(self):
-        alert = QtWidgets.QMessageBox()
-        alert.setIcon(QtWidgets.QMessageBox.Information)
-        alert.setStandardButtons(QtWidgets.QMessageBox.Ok)
-
-        match = re.fullmatch(r"\d\d\d\d-\d\d\d\d", self.idIn.text())
-        dupe = False
-        slist = getData()
-
-        for st in slist:
-            if st[0] == self.idIn.text():
-                dupe = True
-
-
-        if(self.idIn.text() != "" and self.lnameIn.text() != "" and self.fnameIn.text() != "" and self.mname.text() != "" and self.yearIn.text() != "" and self.courseIn.text() != "" and self.gen != "" and match != None and not dupe):
-            studentData = [self.idIn.text(), self.lnameIn.text(), self.fnameIn.text(), self.mnameIn.text(), self.yearIn.text(), self.courseIn.text(), self.gen]
-            
-            pushData(studentData,'a')
-        
-            alert.setText("Student added successfully.")
-            alert.setWindowTitle("Alert")
-            a = alert.exec_()
-            self.resetIn()
-        elif match == None:
-            alert.setText("ID # must follow a YYYY-NNNN format.")
-            alert.setWindowTitle("Error")
-
-            a = alert.exec_()
-        elif dupe:
-            alert.setText("ID # already taken.")
-            alert.setWindowTitle("Error")
-
-            a = alert.exec_()
-        else:
-            alert.setText("No field must be empty.")
-            alert.setWindowTitle("Error")
-
-            a = alert.exec_()
+        self.b1 = QtWidgets.QPushButton(self)
+        self.b1.setText("wot")
     
-    def selectedGender(self):
-        self.gen = self.frame.sender().text()               #set gender variable from radio button signal
-
-    def resetIn(self):
-        #resets input fields
-        self.idIn.setText("")
-        self.lnameIn.setText("")
-        self.fnameIn.setText("")
-        self.mnameIn.setText("")
-        self.yearIn.setText("")
-        self.courseIn.setText("")
-
     def retranslateUi(self, addStudentWindow):
         _translate = QtCore.QCoreApplication.translate
         addStudentWindow.setWindowTitle(_translate("addStudentWindow", "Add Student"))
@@ -170,12 +130,9 @@ class Ui_addStudentWindow(object):
 
 
 if __name__ == "__main__":
-    import sys
-    
-    app = QtWidgets.QApplication(sys.argv)
-    addStudentWindow = QtWidgets.QMainWindow()
-    ui = Ui_addStudentWindow()
-    ui.setupUi(addStudentWindow)
-    addStudentWindow.show()
+    app = QApplication(sys.argv)
+
+    w = MainWindow()
+    w.show()
 
     sys.exit(app.exec_())

@@ -13,11 +13,11 @@ def getData():
     #Returns list of students of format [id, last name, first name, middle name, year, course, gender].
     return stList
 
-def pushData(info):
+def pushData(info,mode):
     #Sends data back to csv file.
     #Info is of format [id, last name, first name, middle name, year, course, gender].
 
-    with open('students.csv','a', newline='') as file:
+    with open('students.csv', f'{mode}', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(info)
 
@@ -25,5 +25,5 @@ if __name__ == '__main__':
     #For testing purposes.
 
     print(getData())
-    pushData(['2','Doe II','John','Doge','2','ME','idk'])
+    pushData(['2','Doe II','John','Doge','2','ME','idk'],'a')
     print(getData())
