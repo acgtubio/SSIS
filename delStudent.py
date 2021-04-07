@@ -119,6 +119,7 @@ class Ui_delStud(object):
         self.diffID.clicked.connect(self.notThisID)
         self.diffID.hide()
 
+        #d - delete, e-edit, else view
         if self.src == 'd':  
             self.delButton.clicked.connect(self.delStudConfirm)
         elif self.src == 'e':
@@ -141,6 +142,7 @@ class Ui_delStud(object):
 
     def checkID(self):
         self.cAlert.setWindowTitle("Alert")
+        
         if(self.idCheck.text() != ""):
             self.studList = getData()
             found = 0
@@ -248,6 +250,7 @@ class Ui_delStud(object):
         self.delButton.setText(_translate("delStud", "Confirm"))
         self.diffID.setText(_translate("delStud", "Not this ID"))
 
+#for testing
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)

@@ -93,6 +93,8 @@ class Ui_MainWindow(object):
         self.addStudent.setText(_translate("MainWindow", "Add Sudent"))
         self.showList.setText(_translate("MainWindow", "Show All"))
 
+
+#opens different windows
 class mainWin(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()

@@ -106,14 +106,14 @@ class Ui_addStudentWindow(object):
         alert.setIcon(QtWidgets.QMessageBox.Information)
         alert.setStandardButtons(QtWidgets.QMessageBox.Ok)
 
-        match = re.fullmatch(r"\d\d\d\d-\d\d\d\d", self.idIn.text())
+        match = re.fullmatch(r"\d\d\d\d-\d\d\d\d", self.idIn.text())            #regex for matching YYYY-NNNN id no. format
         dupe = False
         slist = getData()
 
+        #checks for duplicate ID number
         for st in slist:
             if st[0] == self.idIn.text():
                 dupe = True
-
 
         if(self.idIn.text() != "" and self.lnameIn.text() != "" and self.fnameIn.text() != "" and self.mname.text() != "" and self.yearIn.text() != "" and self.courseIn.text() != "" and self.gen != "" and match != None and not dupe):
             studentData = [self.idIn.text(), self.lnameIn.text(), self.fnameIn.text(), self.mnameIn.text(), self.yearIn.text(), self.courseIn.text(), self.gen]
@@ -168,8 +168,9 @@ class Ui_addStudentWindow(object):
         self.radioButton_3.setText(_translate("addStudentWindow", "Others"))
         self.addStudentButton.setText(_translate("addStudentWindow", "Add Student"))
 
-
+#for testing
 if __name__ == "__main__":
+    
     import sys
     
     app = QtWidgets.QApplication(sys.argv)
