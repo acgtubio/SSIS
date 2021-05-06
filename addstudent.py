@@ -114,6 +114,7 @@ class Ui_addStudentWindow(object):
         for st in slist:
             if st[0] == self.idIn.text():
                 dupe = True
+                break
 
         if(self.idIn.text() != "" and self.lnameIn.text() != "" and self.fnameIn.text() != "" and self.mname.text() != "" and self.yearIn.text() != "" and self.courseIn.text() != "" and self.gen != "" and match != None and not dupe):
             studentData = [self.idIn.text(), self.lnameIn.text(), self.fnameIn.text(), self.mnameIn.text(), self.yearIn.text(), self.courseIn.text(), self.gen]
