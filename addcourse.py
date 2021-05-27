@@ -1,6 +1,7 @@
 from typing import Text
 from PyQt5 import QtCore, QtGui, QtWidgets
 from dbHandling import DBHandling
+from MessageBox import MessageBox
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow, parent, mode = "a", id = None):
@@ -53,46 +54,30 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        self.alert = QtWidgets.QMessageBox()
-
         if self.mode == "e":
             self.__editStateUI()
 
     def __submitClicked(self):
-        self.alert.setIcon(QtWidgets.QMessageBox.Information)
-        self.alert.setStandardButtons(QtWidgets.QMessageBox.Ok)
-
         data = DBHandling.getCourseData(f"WHERE course_code = \'{self.courseCode.text()}\'")
         if data != [] and self.mode == "a":
-            self.alert.setText(f"Course Code {self.courseCode.text()} already taken.")
-            self.alert.setWindowTitle("Error")
-            a = self.alert.exec_()
+            MessageBox.showInformationMessage(f"Course Code {self.courseCode.text()} already taken.", "Error")
             return
 
         if self.courseCode.text() == "" or self.courseName == "":
-            self.alert.setText("No fields must be empty.")
-            self.alert.setWindowTitle("Error")
-            a = self.alert.exec_()
+            MessageBox.showInformationMessage("No fields must be empty.", "Error")
             return
         
         txt = "Add Course?" if self.mode == "a" else "Update Course Information?"
-        self.alert.setIcon(QtWidgets.QMessageBox.Question)
-        self.alert.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
-        self.alert.setText(txt)
-        self.alert.setWindowTitle("Confirmation")
-        c = self.alert.exec_()
+        m = MessageBox.showConfirmationMessage(txt, "Confirmation")
 
-        self.alert.setIcon(QtWidgets.QMessageBox.Information)
-        self.alert.setStandardButtons(QtWidgets.QMessageBox.Ok)
-        if c == QtWidgets.QMessageBox.Yes:
+        if m == QtWidgets.QMessageBox.Yes:
             if self.mode == "a":
                 DBHandling.pushCourseData((self.courseCode.text(), self.courseName.text()))
+                MessageBox.showInformationMessage("Course added.", "Information")
                 self.__resetUI()
-                self.alert.setText("Couse added.")
             else:
                 DBHandling.updateCourseData((self.courseName.text(), self.srcID))
-                self.alert.setText("Course updated.")
-
+                MessageBox.showInformationMessage("Course updated.", "Information")
 
         self.parent.showCourseList()
 

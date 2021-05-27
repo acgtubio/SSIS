@@ -3,6 +3,7 @@ from dbHandling import DBHandling
 import sqlite3
 import addstudent
 import course
+from MessageBox import MessageBox
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -105,11 +106,6 @@ class Ui_MainWindow(object):
         self.courseComboBox.setObjectName("courseComboBox")
         self.courseComboBox.setEnabled(False)
 
-        #MessageBox for alerts
-        self.cAlert = QtWidgets.QMessageBox()
-        self.cAlert.setIcon(QtWidgets.QMessageBox.Question)
-        self.cAlert.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
-
         self.retranslateUi(MainWindow)
         self.showList()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -201,15 +197,14 @@ class Ui_MainWindow(object):
             return
 
         id = self.studentList.item(self.studentList.currentRow(), 0).text()
-        self.cAlert.setText("Delete Student?")
-        a = self.cAlert.exec_()
+
+        m = MessageBox.showConfirmationMessage("Delete Student?", "Confirmation")
         
-        if(a == QtWidgets.QMessageBox.Ok):
+        if(m == QtWidgets.QMessageBox.Yes):
             DBHandling.delStudentData(id)
             self.showList()
-
-        self.cAlert.setText("Student deleted")
-        a = self.cAlert.exec_() 
+        
+        MessageBox.showInformationMessage("Student Deleted.", "Success")
         
     def showList(self, data = []):
         if data != []:
@@ -262,6 +257,7 @@ class ViewCourses(QtWidgets.QMainWindow, course.Ui_courses):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
+    
     a = mainWin()
     a.show()
 

@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from dbHandling import DBHandling
+from MessageBox import MessageBox
 import addcourse
 
 class Ui_courses(object):
@@ -79,25 +80,15 @@ class Ui_courses(object):
         self.retranslateUi(courses)
         QtCore.QMetaObject.connectSlotsByName(courses)
 
-        self.alert = QtWidgets.QMessageBox()
-
     def __deleteCourseClicked(self):
         id = self.courseList.item(self.courseList.currentRow(),0).text()
-        self.alert.setIcon(QtWidgets.QMessageBox.Question)
-        self.alert.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
-        self.alert.setText(f"Date course with course code {id}?")
-        self.alert.setWindowTitle("Confirm Delete")
+        a = MessageBox.showConfirmationMessage(f"Date course with course code {id}?", "Confirm")
 
-        a = self.alert.exec_()
         if a == QtWidgets.QMessageBox.Yes:
             DBHandling.delCourseData(id)
             self.__refreshClicked()
 
-        self.alert.setIcon(QtWidgets.QMessageBox.Information)
-        self.alert.setStandardButtons(QtWidgets.QMessageBox.Ok)
-        self.alert.setText("Course deleted successfully.")
-        self.alert.setWindowTitle("Information")
-        a = self.alert.exec_()
+        MessageBox.showInformationMessage("Course deleted successfully.", "Alert")
 
     def __refreshClicked(self):
         self.showCourseList()

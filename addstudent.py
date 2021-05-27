@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from dbHandling import DBHandling
+from MessageBox import MessageBox
 import re
 
 class Ui_addStudentWindow(object):
@@ -125,11 +126,6 @@ class Ui_addStudentWindow(object):
         self.addStudentButton.setObjectName("addStudentButton")
         self.addStudentButton.clicked.connect(self.__submitButtonClicked)
 
-        # self.editInfo = QtWidgets.QPushButton(self.centralwidget)
-        # self.editInfo.setGeometry(QtCore.QRect(190, 460, 130, 31))
-        # self.editInfo.setObjectName("editInfo")
-        # self.editInfo.clicked.connect(self.__enableFields)
-
         addStudentWindow.setCentralWidget(self.centralwidget)
 
         self.gen = ""
@@ -138,8 +134,6 @@ class Ui_addStudentWindow(object):
         self.retranslateUi(addStudentWindow)
         self.__courseList()
         QtCore.QMetaObject.connectSlotsByName(addStudentWindow)
-
-        self.alert = QtWidgets.QMessageBox()
 
         self.__editState()
     
@@ -221,61 +215,43 @@ class Ui_addStudentWindow(object):
             self.lineEdit.setEnabled(True)
 
     def __submitButtonClicked(self):
-
         if self.gen == "Others":
             self.gen = self.lineEdit.text()
-
-        self.alert.setIcon(QtWidgets.QMessageBox.Information)
-        self.alert.setStandardButtons(QtWidgets.QMessageBox.Ok)
 
         # Checks if ID follows the specified regex format, else return.
         match = re.fullmatch(r"\d\d\d\d-\d\d\d\d", self.idIn.text())
         if match == None:
-            self.alert.setText("ID must follow a YYYY-NNNN format.")
-            self.alert.setWindowTitle("Invalid ID format")
-
-            c = self.alert.exec_()
+            MessageBox.showInformationMessage("ID must follow a YYYY-NNNN format.", "Invalid ID format")
             return 
 
         # Check for duplicate ID.
         idList = DBHandling.getStudentData(f"WHERE id = \'{self.idIn.text()}\'")
         if idList != [] and self.src == "a":
-            self.alert.setText("ID already exists.")
-            self.alert.setWindowTitle("Duplicate ID")
-
-            c = self.alert.exec_()
+            MessageBox.showInformationMessage("ID already taken.", "Duplicate ID")
             return
 
         # Check for empty fields.
         noEmptyField = self.lnameIn.text() != "" and self.fnameIn.text() != "" and self.mnameIn.text() != "" and self.courseComboBox.currentText() != "" and self.gen != ""  and self.yr != ""
         if not noEmptyField:
-            
-            self.alert.setText("All fields must be accomplished.")
-            self.alert.setWindowTitle("Error")
-
-            c = self.alert.exec_()
+            MessageBox.showInformationMessage("All fields must be accomplished.", "Error")
             return
         
         course = self.courseComboBox.currentText().split("-")
         courseCode = course[0].strip()
 
-        self.alert.setIcon(QtWidgets.QMessageBox.Question)
-        self.alert.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
-
         alertText = "Add Student?" if self.src != "e" else "Update Information?"
-        self.alert.setText(alertText)
-        self.alert.setWindowTitle("Confirmation")
+        c = MessageBox.showConfirmationMessage(alertText, "Confirmation")
 
-        c = self.alert.exec_()
         if c == QtWidgets.QMessageBox.Yes:
             if self.src == "a":
                 DBHandling.pushStudentData((self.idIn.text(), self.lnameIn.text(), self.fnameIn.text(), self.mnameIn.text(), self.yr, self.gen, courseCode))
+                MessageBox.showInformationMessage("Student added.", "Success")
                 self.__resetIn()
             else: 
                 DBHandling.updateStudentData((self.lnameIn.text(), self.fnameIn.text(), self.mnameIn.text(), self.yr, self.gen, courseCode, self.srcID))
+                MessageBox.showInformationMessage("Student data updated.", "Success")
         
         self.p.showList()
-        print("done")
 
     def __resetIn(self):
         #resets input fields
