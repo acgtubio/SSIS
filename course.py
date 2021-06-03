@@ -6,7 +6,7 @@ import addcourse
 class Ui_courses(object):
     def setupUi(self, courses):
         courses.setObjectName("courses")
-        courses.resize(605, 542)
+        courses.resize(605, 560)
         self.centralwidget = QtWidgets.QWidget(courses)
         self.centralwidget.setObjectName("centralwidget")
 
@@ -73,6 +73,24 @@ class Ui_courses(object):
         self.courseList.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.courseList.setColumnWidth(1,250)
         self.courseList.doubleClicked.connect(self.__rowDoubleClicked)
+
+        self.prev = QtWidgets.QPushButton(self.centralwidget)
+        self.prev.setGeometry(QtCore.QRect(165, 512, 40, 30))
+        self.prev.setObjectName("prev")
+        self.prev.clicked.connect(self.__prev)
+
+        self.next = QtWidgets.QPushButton(self.centralwidget)
+        self.next.setGeometry(QtCore.QRect(235, 512, 40, 30))
+        self.next.setObjectName("next")
+        self.next.clicked.connect(self.__next)
+
+        self.pageNum = QtWidgets.QLabel(self.centralwidget)
+        self.pageNum.setObjectName("searchLabel")
+        self.pageNum.setGeometry(QtCore.QRect(215, 517, 21, 21))
+        self.pageNum.setFont(font)
+
+        self.page = 1
+
         courses.setCentralWidget(self.centralwidget)
 
         self.showCourseList()
@@ -80,15 +98,31 @@ class Ui_courses(object):
         self.retranslateUi(courses)
         QtCore.QMetaObject.connectSlotsByName(courses)
 
+    def __next(self):
+        self.page += 1
+
+        self.showCourseList(None,self.page)
+
+    def __prev(self):
+        if self.page == 1:
+            return
+
+        self.page -= 1
+
+        self.showCourseList(None,self.page)
+
     def __deleteCourseClicked(self):
         id = self.courseList.item(self.courseList.currentRow(),0).text()
         a = MessageBox.showConfirmationMessage(f"Date course with course code {id}?", "Confirm")
 
         if a == QtWidgets.QMessageBox.Yes:
-            DBHandling.delCourseData(id)
+            s = DBHandling.delCourseData(id)
+            if s == -1:
+                MessageBox.showInformationMessage("Course cannot be deleted. Students are enrolled in this course.", "Delete Failed.")
+            else:
+                MessageBox.showInformationMessage("Course deleted successfully.", "Alert")
             self.__refreshClicked()
 
-        MessageBox.showInformationMessage("Course deleted successfully.", "Alert")
 
     def __refreshClicked(self):
         self.showCourseList()
@@ -123,12 +157,16 @@ class Ui_courses(object):
         else: 
             self.params = 2
         
-    def showCourseList(self, args = None):
+    def showCourseList(self, args = None, page = 1):
         # Display course data provided by the caller, uses database by default
+        if page == 1:
+            self.page = 1
+
+        self.pageNum.setText(str(page))
         if args != None:
             data = args
         else:
-            data = DBHandling.getCourseData()
+            data = DBHandling.getCourseData(f" LIMIT 15 OFFSET {(page-1)*15}")
 
         self.courseList.setRowCount(len(data))
         row = 0
@@ -152,6 +190,8 @@ class Ui_courses(object):
         self.cnradio.setText(_translate("courses", "By Course Name"))
         self.search.setText(_translate("courses", "Search"))
         self.refresh.setText(_translate("courses", "Clear"))
+        self.next.setText(_translate("courses", ">"))
+        self.prev.setText(_translate("courses", "<"))
 
 class AddCourse(QtWidgets.QMainWindow, addcourse.Ui_MainWindow):
     def __init__(self, parent = None, mode = "a", id = None):

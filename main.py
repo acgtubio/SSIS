@@ -8,7 +8,7 @@ from MessageBox import MessageBox
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1000, 510)
+        MainWindow.resize(1000, 537)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
@@ -44,6 +44,16 @@ class Ui_MainWindow(object):
         self.addStudent.setObjectName("addStudent")
         self.addStudent.clicked.connect(self.addStudentClicked)
 
+        self.prev = QtWidgets.QPushButton(self.centralwidget)
+        self.prev.setGeometry(QtCore.QRect(350, 485, 40, 30))
+        self.prev.setObjectName("prev")
+        self.prev.clicked.connect(self.__prev)
+
+        self.next = QtWidgets.QPushButton(self.centralwidget)
+        self.next.setGeometry(QtCore.QRect(420, 485, 40, 30))
+        self.next.setObjectName("next")
+        self.next.clicked.connect(self.__next)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -57,6 +67,11 @@ class Ui_MainWindow(object):
         font.setFamily("Tahoma")
         font.setPointSize(12)
         self.searchLabel.setFont(font)
+
+        self.pageNum = QtWidgets.QLabel(self.centralwidget)
+        self.pageNum.setObjectName("searchLabel")
+        self.pageNum.setGeometry(QtCore.QRect(400, 490, 21, 21))
+        self.pageNum.setFont(font)
 
         #search button
         self.search = QtWidgets.QPushButton(self.centralwidget)
@@ -113,11 +128,25 @@ class Ui_MainWindow(object):
         self.__courseList()
         self.__yrList()
         
+        self.page = 1
         self.rowItems = None
     
     def __viewCoursesClicked(self):
         a = ViewCourses(self)
         a.show()
+
+    def __next(self):
+        self.page += 1
+
+        self.showList([],self.page)
+
+    def __prev(self):
+        if self.page == 1:
+            return
+
+        self.page -= 1
+
+        self.showList([],self.page)
 
     def __searchClicked(self):
         cond = ""
@@ -206,11 +235,14 @@ class Ui_MainWindow(object):
         
         MessageBox.showInformationMessage("Student Deleted.", "Success")
         
-    def showList(self, data = []):
+    def showList(self, data = [], page = 1):
+        if page == 1:
+            self.page = 1
+        self.pageNum.setText(str(page))
         if data != []:
             students = data
         else:
-            students = DBHandling.getStudentCourse()                                      #from dbHandling file.
+            students = DBHandling.getStudentCourse(f" LIMIT 15 OFFSET {(page-1)*15}")                                      #from dbHandling file.
         # print(students)
         self.studentList.setRowCount(len(students))
         row = 0
@@ -234,6 +266,8 @@ class Ui_MainWindow(object):
         self.viewCourses.setText(_translate("MainWindow", "Courses"))
         self.delStudent.setText(_translate("MainWindow", "Delete Student"))
         self.addStudent.setText(_translate("MainWindow", "Add Sudent"))
+        self.prev.setText(_translate("MainWindow", "<"))
+        self.next.setText(_translate("MainWindow", ">"))
 
 #opens different windows
 class mainWin(QtWidgets.QMainWindow, Ui_MainWindow):

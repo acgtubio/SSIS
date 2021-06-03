@@ -1,5 +1,6 @@
 import sqlite3
 from sqlite3.dbapi2 import connect
+from typing import final
 
 class DBHandling:
     __tableCreated = False
@@ -13,11 +14,15 @@ class DBHandling:
 
         conn = sqlite3.connect("sis.db")
         c = conn.cursor()
-        data = c.execute(f"""
-            SELECT * FROM students {args}
-        """).fetchall()
-        
-        conn.close()
+        c.execute("PRAGMA foreign_keys = ON")
+        try:
+            data = c.execute(f"""
+                SELECT * FROM students {args}
+            """).fetchall()
+        except Exception as e:
+            return -1
+        finally:
+            conn.close()
 
         return data
 
@@ -28,6 +33,7 @@ class DBHandling:
 
         conn = sqlite3.connect("sis.db")
         c = conn.cursor()
+        c.execute("PRAGMA foreign_keys = ON")
         c.execute(f"""
             UPDATE students 
             SET last_name = ?, 
@@ -50,7 +56,7 @@ class DBHandling:
 
         conn = sqlite3.connect("sis.db")
         c = conn.cursor()
-
+        c.execute("PRAGMA foreign_keys = ON")
         c.execute("INSERT INTO students VALUES(?, ?, ?, ?, ?, ?, ?)", info)
 
         conn.commit()
@@ -62,6 +68,7 @@ class DBHandling:
         #private method for creating tables in case tables do not exist in the database.
         conn = sqlite3.connect("sis.db")
         c = conn.cursor()
+        c.execute("PRAGMA foreign_keys = ON")
         c.execute("""
             CREATE TABLE IF NOT EXISTS courses(
                 course_code CHAR(10),
@@ -92,6 +99,7 @@ class DBHandling:
         
         conn = sqlite3.connect("sis.db")
         c = conn.cursor()
+        c.execute("PRAGMA foreign_keys = ON")
         data = c.execute(f"SELECT * FROM courses {args}").fetchall()
 
         conn.close()
@@ -105,6 +113,7 @@ class DBHandling:
 
         conn = sqlite3.connect("sis.db")
         c = conn.cursor()
+        c.execute("PRAGMA foreign_keys = ON")
         c.execute("""
             INSERT INTO courses VALUES(?,?)
         """, info)
@@ -119,6 +128,7 @@ class DBHandling:
 
         conn = sqlite3.connect("sis.db")
         c = conn.cursor()
+        c.execute("PRAGMA foreign_keys = ON")
         c.execute("""
             UPDATE courses
             SET course_name = ?
@@ -135,13 +145,19 @@ class DBHandling:
 
         conn = sqlite3.connect("sis.db")
         c = conn.cursor()
-        c.execute(f"""
-            DELETE FROM courses
-            WHERE course_code = \'{info}\'
-        """)
-
-        conn.commit()
-        conn.close()
+        c.execute("PRAGMA foreign_keys = ON")
+        try:
+            c.execute(f"""
+                DELETE FROM courses
+                WHERE course_code = \'{info}\'
+            """)
+        except Exception as e:
+            return -1
+        else:
+            conn.commit()
+        finally:
+            conn.close()
+        
 
     @classmethod
     def delStudentData(cls, id):
@@ -150,6 +166,7 @@ class DBHandling:
 
         conn = sqlite3.connect("sis.db")
         c = conn.cursor()
+        c.execute("PRAGMA foreign_keys = ON")
         c.execute(f"""
             DELETE FROM students
             WHERE id = \'{id}\'
@@ -165,6 +182,7 @@ class DBHandling:
 
         conn = sqlite3.connect("sis.db")
         c = conn.cursor()
+        c.execute("PRAGMA foreign_keys = ON")
         data = c.execute(f"""
             SELECT * FROM 
             students INNER JOIN courses 
